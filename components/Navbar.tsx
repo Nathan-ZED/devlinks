@@ -1,19 +1,25 @@
+'use client'
+
 import Link from "next/link";
 import Image from "next/image";
 import { FaLink, FaRegCircleUser, FaRegEyeSlash } from "react-icons/fa6";
+import { usePathname } from 'next/navigation'
+
 
 
 export default function Navbar() {
+    const route = usePathname();
+
     return (
-        <nav className="py-3 border-b-[1px] border-slate-300">
+        <nav className="py-3 border-b-[1px] border-slate-300 fixed top-0 left-0 w-full">
             <div className="container">
                 <div className="flex items-center justify-between w-full">
                     <Link href="/" className="flex items-center gap-x-3">
-                        <Image src="/images/logo.svg" alt="logo" width={36} height={36} />
+                        <Image src="/images/logo.svg" alt="logo" width={42} height={42} />
                         <span className="font-bold text-xl hidden md:block">devlinks</span>
                     </Link>
                     <div className="flex items-center gap-x-5">
-                        <Link href="/links" className="text-slate-500 px-3 h-[42px] flex items-center gap-x-1">
+                        <Link href="/" className={`${route === '/' ? 'text-primary bg-primary/10' : 'text-slate-500'} rounded-[8px] px-3 h-[42px] flex items-center gap-x-1`}>
                             <FaLink className="text-xl" />
                             <span className="text-md hidden md:block">Links</span>
                         </Link>
