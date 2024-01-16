@@ -9,8 +9,6 @@ export default function AuthLayout({children}: {
     children: React.ReactNode
 }) {
     return (
-        <html lang="en">
-        <body className={instrumentSans.className + 'relative'}>
             <div className="container py-4">
                 <div className="flex items-center justify-start gap-x-2">
                     <Image src="/images/logo.svg" alt="logo" width={50} height={50} />
@@ -18,7 +16,5 @@ export default function AuthLayout({children}: {
                 </div>
                 {children}
             </div>
-        </body>
-        </html>
     )
 }
