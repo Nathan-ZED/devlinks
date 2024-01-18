@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
-import { Instrument_Sans } from 'next/font/google'
 import '../globals.css'
 import Navbar from "@/components/Navbar";
-
-const instrumentSans = Instrument_Sans({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Devlinks',
@@ -15,6 +12,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
   return (
     <>
         <Navbar />
