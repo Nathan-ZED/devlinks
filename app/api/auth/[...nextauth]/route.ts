@@ -29,9 +29,12 @@ export const authOptions: NextAuthOptions = {
                 console.log(passwordIsCorrect);
 
                 if(passwordIsCorrect) {
+                    console.log(user);
                     return {
                         id: user?.id,
-                        email: user?.email
+                        email: user?.email,
+                        name: user?.name,
+                        image: user?.thumbnail,
                     }
                 }
                 return null

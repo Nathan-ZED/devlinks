@@ -10,15 +10,16 @@ export async function POST(request: Request) {
         console.log(email, password, name, confirmPassword);
         const hashedPassword = await hash(password, 10);
         try {
-            const user = await prisma.user.create({
+            //TODO: Check if user already exist
+            await prisma.user.create({
                 data: {
-                  email: email,
-                  password: hashedPassword,
-                  name: name,
+                    email: email,
+                    password: hashedPassword,
+                    name: name,
                 },
-              });
+            });
         } catch(e) {
-            console.log({e});
+            console.log({error: e});
         }
 
     } catch (error: any) {

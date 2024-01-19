@@ -13,7 +13,7 @@ export default function Navbar() {
     const { data: session } = useSession();
 
     return (
-        <nav className="py-3 border-b-[1px] border-slate-300 fixed z-[5] top-0 left-0 w-full">
+        <nav className="py-3 border-b-[1px] border-slate-300 bg-white fixed z-[5] top-0 left-0 w-full">
             <div className="container">
                 <div className="flex items-center justify-between w-full">
                     <Link href="/" className="flex items-center gap-x-3">
