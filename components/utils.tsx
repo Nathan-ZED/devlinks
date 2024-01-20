@@ -15,7 +15,8 @@ import Image from "next/image";
 
 export type Platform = {
     name: string;
-    icon: IconType | React.ReactNode
+    icon: IconType | React.ReactNode,
+    url: string,
 }
 
 export const TalentIO = () => {
@@ -27,54 +28,67 @@ type Platforms = Platform[];
 export const platforms: Platforms = [
     {
         name: 'Github',
-        icon: FaGithub
+        icon: FaGithub,
+        url: 'https://github.com'
     },
     {
         name: 'LinkedIn',
-        icon: FaLinkedin
+        icon: FaLinkedin,
+        url: 'https://linkedin.com'
     },
     {
         name: 'Youtube',
-        icon: FaYoutube
+        icon: FaYoutube,
+        url: 'https://youtube.com'
     },
     {
         name: 'Patreon',
-        icon: FaPatreon
+        icon: FaPatreon,
+        url: 'https://patreon.com'
     },
     {
         name: 'X',
-        icon: FaXTwitter
+        icon: FaXTwitter,
+        url: 'https://x.com'
     },
     {
         name: 'Dev.to',
-        icon: FaDev
+        icon: FaDev,
+        url: 'https://dev.to'
     },
     {
         name: 'Codewars',
-        icon: SiCodewars
+        icon: SiCodewars,
+        url: 'https://codewars.com'
     },
     {
         name: 'freeCodeCamp',
-        icon: FaFreeCodeCamp
+        icon: FaFreeCodeCamp,
+        url: 'https://freecodecamp.com'
     },
     {
         name: 'Talent.io',
-        icon: TalentIO
+        icon: TalentIO,
+        url: 'https://talent.io'
     },
     {
         name: 'FreeWork',
-        icon: FaDev
+        icon: FaDev,
+        url: 'https://freework.com'
     },
     {
         name: 'Gitlab',
-        icon: FaGitlab
+        icon: FaGitlab,
+        url: 'https://gitlab.com'
     },
     {
         name: 'Facebook',
-        icon: FaFacebook
+        icon: FaFacebook,
+        url: 'https://facebook.com'
     },
     {
         name: 'Instagram',
-        icon: FaInstagram
+        icon: FaInstagram,
+        url: 'https://instagram.com'
     },
 ]

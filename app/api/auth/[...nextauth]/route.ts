@@ -1,12 +1,10 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
 
-const prisma = new PrismaClient();
-
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
     pages: {
         signIn: '/login',
     },
@@ -43,6 +41,6 @@ export const authOptions: NextAuthOptions = {
     ]
 }
 
-export const handler = NextAuth(authOptions);
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST}

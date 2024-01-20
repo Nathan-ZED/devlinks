@@ -61,3 +61,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-infinite {
+  animation: spin 1s linear infinite;
+}

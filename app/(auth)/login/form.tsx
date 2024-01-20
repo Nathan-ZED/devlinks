@@ -7,9 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Form() {
   const router = useRouter();
+  const [authError, setAuthError] = useState<string | null>(null);
   const { handleSubmit, register } = useForm<FormLoginData>();
   const onSubmit: SubmitHandler<FormLoginData> = async (values) => {
     const { email, password } = values;
@@ -19,12 +21,15 @@ export default function Form() {
       redirect: false,
     });
 
+    if(login?.ok === false && login?.status === 401) {
+        setAuthError('This account does not exist')
+    }
+
     if (!login?.error) {
+      authError && setAuthError(null);
       router.push("/");
       router.refresh();
     }
-
-    console.log(login);
   };
 
   return (
@@ -44,6 +49,7 @@ export default function Form() {
           placeholder="Password"
         />
       </Label>
+      {authError &&  <span className="text-red-600 p-2 rounded-md bg-red-200 text-center">{authError}</span>}
       <Button type="submit" className="w-full py-4">
         Login
       </Button>
