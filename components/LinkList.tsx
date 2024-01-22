@@ -5,13 +5,15 @@ import LinkCard from "./LinkCard";
 import LinkContext from "@/lib/LinksContext";
 import { Suspense, useContext, useEffect } from "react";
 import Loading from "./Loading";
+import { AnimatePresence } from "framer-motion";
 
 export default function LinkList({linksOfUser}:LinkListProps) {
 
-    const {links, setLinks} = useContext(LinkContext);
+    const {links, setLinks, setInitialsLinks, isDisabled, setIsDisabled} = useContext(LinkContext);
     
     useEffect(() => {
         setLinks(linksOfUser);
+        setInitialsLinks(linksOfUser);
     }, [])
 
     return (
@@ -21,11 +23,13 @@ export default function LinkList({linksOfUser}:LinkListProps) {
                  ? <Loading />
                  : (
                     <div className="flex flex-col gap-y-[2rem]">
+                        <AnimatePresence>
                         {
                             links?.map((link:Link, i:number) => (
-                                <LinkCard key={i} link={link} index={i} />
+                                    <LinkCard key={i} link={link} index={i} />
                             ))
                         }
+                        </AnimatePresence>
                     </div>
                  )
             }

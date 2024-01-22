@@ -19,17 +19,33 @@ type AddLinkProps = {
     user: User
 }
 
+function highestID(objets: Link[] | [] | null): number {
+  let maxId = 0;
+  if(objets) {
+
+    objets.forEach((objet:Link) => {
+      if(objet.id) {
+        if (objet.id > maxId) {
+            maxId = objet.id;
+        }
+      }
+    });
+  }
+  return maxId + 1;
+}
+
 export default function AddLink({user}:AddLinkProps) {
-    const { links, setLinks } = useContext(LinkContext);
+    const { links, setLinks, setIsDisabled } = useContext(LinkContext);
     
     function handleClick() {
         const newLink:Link = {
-            name: '',
-            url: '',
-            userId: user?.id,
+          id: highestID(links),
+          name: '',
+          url: '',
+          userId: user?.id,
         }
         const updatedLinks = links ? [...links, newLink] : [newLink]
-        setLinks(updatedLinks)
+        setLinks(updatedLinks);
     }
 
   return (
@@ -41,9 +57,9 @@ export default function AddLink({user}:AddLinkProps) {
       </p>
       <div className="flex items-center w-full pt-4">
         <Button
-            onClick={() => handleClick()}
+          onClick={() => handleClick()}
           variant="outline"
-          className="w-full py-4 border-primary text-primary active:bg-primary/10 font-medium"
+          className="add-button w-full py-4 border-primary text-primary active:bg-primary/10 font-medium"
         >
           <FaPlus className="mr-2 h-4 w-4" /> Add new link
         </Button>

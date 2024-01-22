@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button"
 import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import LinkList from "@/components/LinkList";
 import { LinkProvider } from "@/lib/LinksContext";
 import AddLink from "@/components/AddLink";
+import SaveButton from "@/components/SaveButton";
 
 export type Link = {
     id?: number,
@@ -59,15 +59,7 @@ export default async function Home() {
                     : <LinkList linksOfUser={userWithLinks?.links} />
                 }
             </div>
-                <div className="fixed bg-white w-full bottom-0 left-0 border-t-2 border-slate-200 py-3">
-                    <div className="container">
-                        <div className="flex items-center justify-end">
-                            <Button disabled={true} className="w-full md:w-auto py-4">
-                                Save
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <SaveButton />
             </main>
         </LinkProvider>
     );
