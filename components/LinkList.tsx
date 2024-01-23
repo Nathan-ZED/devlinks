@@ -9,11 +9,11 @@ import { AnimatePresence } from "framer-motion";
 
 export default function LinkList({linksOfUser}:LinkListProps) {
 
-    const {links, setLinks, setInitialsLinks, isDisabled, setIsDisabled} = useContext(LinkContext);
+    const {links, setLinks, setInitialsLinks, initialLinks, isDisabled, setIsDisabled} = useContext(LinkContext);
     
     useEffect(() => {
         setLinks(linksOfUser);
-        setInitialsLinks(linksOfUser);
+        if(!initialLinks) setInitialsLinks(linksOfUser);
     }, [])
 
     return (

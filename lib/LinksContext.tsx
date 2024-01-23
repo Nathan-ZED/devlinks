@@ -1,11 +1,13 @@
 "use client";
 import { Link } from '@/app/(app)/page';
+import { Platform } from '@/components/utils';
 import { createContext, use, useEffect, useState } from 'react';
 
 
 // Définition du type pour les données du contexte
 type LinkContextType = {
     links: Link[] | null | [];
+    platforms: Platform[] | null,
     setLinks: (links: Link[]) => void;
     initialLinks: Link[] | null | [],
     setInitialsLinks: (initialLinks: Link[]) => void;
@@ -19,6 +21,7 @@ type LinkContextType = {
   
   const LinkContext = createContext<LinkContextType>({
     links: null,
+    platforms: null,
     setLinks: () => {},
     initialLinks: null,
     setInitialsLinks: () => {},
@@ -49,15 +52,23 @@ type LinkContextType = {
 }
   export const LinkProvider: React.FC<LinkProviderProps> = ({ children }) => {
     const [links, setLinks] = useState<Link[] | null>(null);
+    const [platforms, setPlatforms] = useState(null);
     const [initialLinks, setInitialsLinks] = useState<Link[] | null>(null);
     const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
+    async function getPlatforms() {
+      const req = await fetch('/api/platform/');
+      const res = await req.json();
+      setPlatforms(res);
+    }
+
     useEffect(() => {
+      getPlatforms();
       setIsDisabled(comparerTableauxObjets(links, initialLinks))
     }, [links])
-  
+
     return (
-      <LinkContext.Provider value={{ links, setLinks, initialLinks, setInitialsLinks, isDisabled, setIsDisabled }}>
+      <LinkContext.Provider value={{ links, setLinks, initialLinks, setInitialsLinks, isDisabled, setIsDisabled, platforms }}>
         {children}
       </LinkContext.Provider>
     );

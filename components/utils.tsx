@@ -15,7 +15,7 @@ import Image from "next/image";
 
 export type Platform = {
     name: string;
-    icon: IconType | React.ReactNode,
+    icon: IconType | React.ReactNode | string,
     url: string,
 }
 
