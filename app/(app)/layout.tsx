@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import '../globals.css'
 import Navbar from "@/components/Navbar";
+import { LinkProvider } from '@/lib/LinksContext';
 
 export const metadata: Metadata = {
   title: 'Devlinks',
@@ -14,9 +15,9 @@ export default function RootLayout({
 }) {
 
   return (
-    <>
+    <LinkProvider>
         <Navbar />
         {children}
-    </>
+    </LinkProvider>
   )
 }

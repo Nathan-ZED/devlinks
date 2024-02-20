@@ -1,3 +1,4 @@
+import { Link } from "@/app/(app)/page";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -10,7 +11,6 @@ export async function POST(req: Request, res: Response) {
     })
 
     if(dbPlatform) {
-
         const alreadyExistingLink = await prisma.link.findFirst({
             where: {userId: userId, platformId: dbPlatform.id}
         })
@@ -49,4 +49,19 @@ export async function DELETE(req: Request) {
     })
 
     return NextResponse.json(links);
+}
+
+export async function PUT(req: Request, res: Response) {
+    const {linksToEdit} = await req.json();
+    console.log(linksToEdit);
+    linksToEdit.forEach(async (link:Link, i:number) => {
+        await prisma.link.update({
+            where: {id:link.id},
+            data: {
+                order: link.order,
+            }
+        });
+    })
+
+    return NextResponse.json({message: 'Okay'});
 }

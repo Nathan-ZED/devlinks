@@ -29,13 +29,15 @@ import LinkContext from "@/lib/LinksContext";
 import { FaCopy, FaTrash } from "react-icons/fa6";
 import { FaPaste } from "react-icons/fa6";
 import { Button } from "./ui/button";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useDragControls } from "framer-motion";
 import * as Icons from "react-icons/fa"
 import * as IconsSix from "react-icons/fa6"
+import { MdDragIndicator } from "react-icons/md";
+import { Reorder } from "framer-motion";
+
 
 type LinkCard = {
   link: Link;
-  index: number;
 };
 
 export const DynamicFaIcon = ({ name }:{name:any}) => {
@@ -54,11 +56,13 @@ export const DynamicFaIcon = ({ name }:{name:any}) => {
   return <IconComponent />;
 };
 
-export default function LinkCard({ link, index }: LinkCard) {
+export default function LinkCard({ link }: LinkCard) {
   const { links, setLinks, isDisabled, setIsDisabled, platforms } = useContext(LinkContext);
+  const [platform, setPlatform] = useState<Platform | null>(null)
   const [selectedLink, setSelectedLink] = useState<string>(link.name);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [linkUrl, setLinkUrl] = useState<string | null>(null);
+  const controls = useDragControls();
 
   async function handleRemove(e: SyntheticEvent) {
     const response = await fetch(`/api/link/`, {
@@ -84,7 +88,9 @@ export default function LinkCard({ link, index }: LinkCard) {
     if(link.name === '') {
       setEditMode(true);
     }
-  }, [])
+    const selectedPlatform = platforms?.filter(el => el.id === link.platformId);
+    if(selectedPlatform) setPlatform(selectedPlatform[0]);
+  }, [platforms])
 
   function rightInputPlaceholder() {
     if (linkUrl) return linkUrl;
@@ -93,98 +99,63 @@ export default function LinkCard({ link, index }: LinkCard) {
   }
 
   return (
-      <motion.div 
-        initial={{transformOrigin: 'top', scaleY: .5, opacity: 0}} 
-        animate={{transformOrigin: 'top', scaleY: 1, opacity: 1}}  
-        exit={{transformOrigin: 'top', scaleY: .5, opacity: 0}}
-        className="bg-primary/10 border-2 border-primary p-4 rounded-xl flex flex-col gap-y-4 items-center w-full">
-        <div className="flex items-center justify-between w-full">
-          <span className="font-light text-slate-400 text-xl">
-            Link #<span className="text-primary/70 font-bold">{index + 1}</span>
-          </span>
-          {
-            !editMode
-             ? (
-              <button
-                className="flex items-center gap-x-2 text-slate-500"
-                type="button"
-                onClick={() => setEditMode(prev => !prev)}
-                role="button"
-              >
-                <FaEdit className="text-xl" />
-                  Edit
-              </button>
-             )
-             : (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <button
-                    className="flex items-center gap-x-2 text-red-400"
-                    type="button"
-                    role="button"
-                  >
-                    <FaTrash />
-                    Remove
-                  </button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className="max-w-[90%] rounded-xl">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action will delete {link.name} in your links.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction className="bg-red-500" onClick={handleRemove}>
-                      Continue
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-             )
-          }
-        </div>
-        <div className="flex flex-col gap-y-[1rem] items-center w-full">
-          <Label className="w-full flex flex-col gap-y-3">
-            <span className="text-slate-500">Platform</span>
-            <Select
-              disabled={!editMode}
-              onValueChange={(e: string) => handleChange(e)}
-              defaultValue={link.name}
-            >
-              <SelectTrigger className="w-full flex items-center justify-between">
-                <SelectValue placeholder="Select your platform" />
-              </SelectTrigger>
-              <SelectContent>
-                {platforms?.map((platform: Platform) => {
-                  return (
-                    <SelectItem key={platform.name} value={platform.name}>
-                      <div className="flex items-center gap-x-3 justify-start w-full">
-                        <DynamicFaIcon name={platform.icon} />
-                        <span>{platform.name}</span>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-          </Label>
-          <Label className="w-full flex flex-col gap-y-3">
-            <span className="text-slate-500">Link</span>
-            <Input disabled={!editMode} placeholder={rightInputPlaceholder()} />
-            <div className="flex items-center gap-x-3">
-              <Button onClick={() => setEditMode(prev => !prev)} className="copy text-primary active:text-white active:bg-primary focus:bg-white bg-white py-4 flex justify-center items-center gap-x-2 rounded-md w-full">
-                <FaCopy />
-                {editMode ? 'Confirm' : 'Copy'}
-              </Button>
-              <Button onClick={() => setEditMode(prev => !prev)} className="copy text-primary active:text-white active:bg-primary focus:bg-white bg-white py-4 flex justify-center items-center gap-x-2 rounded-md w-full">
-                <FaPaste />
-                {editMode ? 'Cancel' : 'Paste'}
-              </Button>
+    <Reorder.Item dragListener={false} dragControls={controls} value={link}>
+        <motion.div 
+          initial={{transformOrigin: 'top', scaleY: .5, opacity: 0}} 
+          animate={{transformOrigin: 'top', scaleY: 1, opacity: 1}}  
+          exit={{transformOrigin: 'top', scaleY: .5, opacity: 0}}
+          className="text-white select-none bg-white border-2 border-slate-200 p-4 relative z-10 rounded-xl flex gap-y-2 items-center w-full overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full z-[0] opacity-20"></div>
+          <div className="flex flex-col items-start gap-y-3 w-full">
+            <div className="flex items-center justify-between w-full relative z-10">
+              <span className="font-light text-4xl flex items-center gap-x-3" style={{color: platform?.color}}>
+                <DynamicFaIcon name={platform?.icon} />
+                <span className="font-bold text-xl">{link.name}</span>
+              </span>
             </div>
-          </Label>
-        </div>
-      </motion.div>
+            <div className="flex gap-x-2 items-center relative z-10 w-full">
+              <IconsSix.FaLink className="text-slate-400 text-xl" />
+              <span className="text-start text-slate-400">{rightInputPlaceholder()}</span>
+            </div>
+          </div>
+          <div className="flex gap-3 items-center">
+                <button
+                  className="flex items-center gap-x-2 p-3 rounded-lg text-slate-400 relative z-10"
+                  type="button"
+                  onClick={() => setEditMode(prev => !prev)}
+                  role="button">
+                  <FaEdit className="text-2xl" />
+                </button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <button
+                      className="flex relative z-10 items-center gap-x-2 text-red-400"
+                      type="button"
+                      role="button"
+                    >
+                      <FaTrash className="text-xl" />
+                    </button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="max-w-[90%] rounded-xl">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action will delete {link.name} in your links.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction className="bg-red-500" onClick={handleRemove}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+                <button onPointerDown={(e) => controls.start(e)} className="relative z-10 p-3 touch-none" type="button">
+                  <MdDragIndicator className="text-4xl text-slate-300 ms-4" />
+                </button>
+              </div>
+        </motion.div>
+    </Reorder.Item>
   );
 }

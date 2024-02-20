@@ -50,6 +50,7 @@ type LinkContextType = {
 
     return true;
 }
+
   export const LinkProvider: React.FC<LinkProviderProps> = ({ children }) => {
     const [links, setLinks] = useState<Link[] | null>(null);
     const [platforms, setPlatforms] = useState(null);
@@ -57,7 +58,9 @@ type LinkContextType = {
     const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
     async function getPlatforms() {
-      const req = await fetch('/api/platform/');
+      const req = await fetch('/api/platform/', {
+        cache: 'no-store'
+      });
       const res = await req.json();
       setPlatforms(res);
     }

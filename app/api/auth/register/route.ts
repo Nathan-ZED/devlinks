@@ -6,7 +6,6 @@ import { prisma } from "@/lib/prisma";
 export async function POST(request: Request) {
     try {
         const { email, password, name, confirmPassword } = await request.json();
-        console.log(email, password, name, confirmPassword);
         const hashedPassword = await hash(password, 10);
         try {
             //TODO: Check if user already exist
