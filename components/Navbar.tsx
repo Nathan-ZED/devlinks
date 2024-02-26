@@ -25,7 +25,7 @@ export default function Navbar() {
                             <FaLink className="text-xl" />
                             <span className="text-md hidden md:block">Links</span>
                         </Link>
-                        <Link href="/profile" className="text-slate-500 px-3 h-[42px] flex items-center gap-x-1">
+                        <Link href="/profile" className={`${route === '/profile' ? 'text-primary bg-primary/10' : 'text-slate-500'} rounded-[8px] px-3 h-[42px] flex items-center gap-x-1`}>
                             <FaRegCircleUser className="text-lg" />
                             <span className="text-md hidden md:block">Profile</span>
                         </Link>

@@ -1,8 +1,8 @@
 "use client";
+
 import { Link } from '@/app/(app)/page';
 import { Platform } from '@/components/utils';
 import { createContext, use, useEffect, useState } from 'react';
-
 
 // Définition du type pour les données du contexte
 type LinkContextType = {
@@ -57,16 +57,7 @@ type LinkContextType = {
     const [initialLinks, setInitialsLinks] = useState<Link[] | null>(null);
     const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
-    async function getPlatforms() {
-      const req = await fetch('/api/platform/', {
-        cache: 'no-store'
-      });
-      const res = await req.json();
-      setPlatforms(res);
-    }
-
     useEffect(() => {
-      getPlatforms();
       setIsDisabled(comparerTableauxObjets(links, initialLinks))
     }, [links])
 

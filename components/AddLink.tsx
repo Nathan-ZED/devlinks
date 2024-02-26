@@ -60,27 +60,25 @@ type FormAddData = {
 
 export default function AddLink({ user }: AddLinkProps) {
   const { links, setLinks, setIsDisabled, platforms } = useContext(LinkContext);
-  const [selectValue, setSelectValue] = useState<string | null>(null);
+  const [platformValue, setPlatformValue] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const { register, handleSubmit, reset } = useForm();
   const [error, setError] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
-  function handleChange(selectVal: string) {
-    setSelectValue(selectVal);
-  }
-
   function closeDialog() {
     setIsDialogOpen(prev => !prev)
-    setSelectValue(null)
+    setPlatformValue(null)
     reset();
     setError(null);
   }
 
   function handleInput(e:React.SyntheticEvent<HTMLInputElement>) {
+    setPlatformValue(e.currentTarget?.value);
     if(e.currentTarget.value.length > 0) {
       if(!isComplete) setIsComplete(prev => !prev)
     } else {
+      reset();
       if(isComplete) setIsComplete(false);
     }
   }
@@ -92,15 +90,16 @@ export default function AddLink({ user }: AddLinkProps) {
       method: 'POST',
       body: JSON.stringify({
         userId: user.id,
-        platform: selectValue,
+        platform: platformValue,
         link: link,
       }),
     })
     const newLinks = await response.json();
+    console.log(newLinks)
     if(!newLinks.status) {
       reset();
       setLinks(newLinks);
-      setSelectValue(null)
+      setPlatformValue(null)
       setIsDialogOpen(prev => !prev);
     } else {
       setError(newLinks.error);
@@ -136,29 +135,13 @@ export default function AddLink({ user }: AddLinkProps) {
               </DialogHeader>
               <Label className="w-full flex flex-col gap-y-3">
                 <span className="text-slate-500">Platform</span>
-                <Select {...register('platform')} onValueChange={handleChange}>
-                  <SelectTrigger className="w-full flex items-center justify-between">
-                    <SelectValue placeholder="Select your platform" />
-                  </SelectTrigger>
-                  <SelectContent>
-                  {platforms?.map((platform: Platform) => {
-                    return (
-                      <SelectItem key={platform.name} value={platform.name}>
-                        <div className="flex items-center gap-x-3 justify-start w-full">
-                          <DynamicFaIcon name={platform.icon} />
-                          <span>{platform.name}</span>
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
-                  </SelectContent>
-                </Select>
+                <Input {...register('platform')} placeholder="Anything you want" onChange={handleInput} />
               </Label>
               {
-                selectValue && (
+                platformValue && (
                   <Label className="w-full flex flex-col gap-y-3">
                     <span className="text-slate-500">Link</span>
-                    <Input {...register('link')} onChange={handleInput} />
+                    <Input {...register('link')} />
                   </Label>
                 )
               }

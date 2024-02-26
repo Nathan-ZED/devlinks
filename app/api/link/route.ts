@@ -6,27 +6,11 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request, res: Response) {
 
     const { platform, link, userId } = await req.json();
-    const dbPlatform = await prisma.platform.findFirst({
-        where: {name:platform}
-    })
-
-    if(dbPlatform) {
-        const alreadyExistingLink = await prisma.link.findFirst({
-            where: {userId: userId, platformId: dbPlatform.id}
-        })
-
-        if(alreadyExistingLink) {
-            return NextResponse.json({
-                status: 402,
-                error: `You already got a ${dbPlatform.name} link`
-            });
-        }
-        
+        console.log(platform)
         await prisma.link.create({
             data: {
-                name: dbPlatform.name,
+                name: platform,
                 url: link,
-                platformId: dbPlatform.id,
                 userId: userId,
             }
         })
@@ -34,9 +18,6 @@ export async function POST(req: Request, res: Response) {
             where: {userId: userId}
         })
         return NextResponse.json(links);
-    }
-
-    return NextResponse.json({message: 'This platform does not exist'});
 }
 
 export async function DELETE(req: Request) {

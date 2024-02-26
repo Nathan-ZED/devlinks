@@ -2,13 +2,6 @@
 
 import { Link } from "@/app/(app)/page";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -19,17 +12,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { FaEdit, FaGithub } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import { Platform } from "./utils";
-import { IconType } from "react-icons/lib";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import LinkContext from "@/lib/LinksContext";
-import { FaCopy, FaTrash } from "react-icons/fa6";
-import { FaPaste } from "react-icons/fa6";
-import { Button } from "./ui/button";
-import { AnimatePresence, motion, useDragControls } from "framer-motion";
+import { FaTrash } from "react-icons/fa6";
+import { motion, useDragControls } from "framer-motion";
 import * as Icons from "react-icons/fa"
 import * as IconsSix from "react-icons/fa6"
 import { MdDragIndicator } from "react-icons/md";
@@ -38,22 +26,6 @@ import { Reorder } from "framer-motion";
 
 type LinkCard = {
   link: Link;
-};
-
-export const DynamicFaIcon = ({ name }:{name:any}) => {
-  //@ts-ignore
-  const IconComponent = Icons[name];
-
-  if (!IconComponent) { // Return a default one
-    //@ts-ignore
-    const Icon6Components = IconsSix[name];
-    if(!Icon6Components) {
-      return <Icons.FaSuitcase />;
-    }
-    return (<Icon6Components />)
-  }
-
-  return <IconComponent />;
 };
 
 export default function LinkCard({ link }: LinkCard) {
@@ -98,6 +70,8 @@ export default function LinkCard({ link }: LinkCard) {
     return "Your link...";
   }
 
+  console.log(link);
+
   return (
     <Reorder.Item dragListener={false} dragControls={controls} value={link}>
         <motion.div 
@@ -109,8 +83,7 @@ export default function LinkCard({ link }: LinkCard) {
           <div className="flex flex-col items-start gap-y-3 w-full">
             <div className="flex items-center justify-between w-full relative z-10">
               <span className="font-light text-4xl flex items-center gap-x-3" style={{color: platform?.color}}>
-                <DynamicFaIcon name={platform?.icon} />
-                <span className="font-bold text-xl">{link.name}</span>
+                <span className="font-bold text-xl text-slate-700">{link.name}</span>
               </span>
             </div>
             <div className="flex gap-x-2 items-center relative z-10 w-full">

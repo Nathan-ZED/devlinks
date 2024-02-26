@@ -10,7 +10,6 @@ export type Link = {
   name: string;
   userId: number;
   order: number;
-  platformId?: number;
 };
 
 type User = {
@@ -42,13 +41,13 @@ export default async function Home() {
   const linksCount: number = userWithLinks?.links.length;
 
   return (
-      <main className="flex min-h-[100svh] flex-col items-center py-[8rem] justify-between relative">
-        <div className="absolute right-0 z-[-1] bg-primary/30 top-[50%] rounded-full w-[200px] h-[200px] blur-[100px]"></div>
-        <div className="container">
-          <AddLink user={userWithLinks} />
-          <LinksSection userLinks={userWithLinks?.links} /> 
-        </div>
-        <SaveButton />
-      </main>
+    <main className="relative flex min-h-[100svh] flex-col items-center justify-between py-[8rem]">
+      <div className="bg-primary/30 absolute right-0 top-[50%] z-[-1] h-[200px] w-[200px] rounded-full blur-[100px]"></div>
+      <div className="container">
+        <AddLink user={userWithLinks} />
+        <LinksSection userLinks={userWithLinks?.links} />
+      </div>
+      <SaveButton />
+    </main>
   );
 }
