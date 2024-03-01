@@ -12,9 +12,6 @@ export default async function Profile() {
     where: {email: session?.user?.email},
   })
 
-  console.log(session);
-
-
   return (
     <main className="flex min-h-[100svh] flex-col items-center py-[8rem] justify-between relative">
       <div className="container">

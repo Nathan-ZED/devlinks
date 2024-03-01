@@ -1,7 +1,7 @@
 "use client";
 import { FaRegImage } from "react-icons/fa";
 import { FaUpload } from "react-icons/fa6";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Compressor from 'compressorjs';
 import { prisma } from "@/lib/prisma";
@@ -11,45 +11,50 @@ type Props = {
   id: number;
 }
 
+
 export default function ProfilePicture({id}: Props) {
   const [file, setFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState('');
+  
+  async function checkIfProfilePictureExists(id: number) {
+    const response = await fetch(`http://localhost:8000/image/${id}`);
+    const result = await response.json();
+    return result;
+  }
 
   const handleFileChange = (event:any) => {
       setFile(event.target.files[0]);
   };
 
   const handleSubmit = async () => {
-      if (!file) {
-          alert('Veuillez sélectionner un fichier.');
-          return;
-      }
+    if (!file || !id) {
+      alert('Please select a file and enter user ID');
+      return;
+    }
 
-      new Compressor(file, {
-          quality: 0.5,
-          success: async (result) => {
-            const formData = new FormData();
-            //@ts-ignore
-            formData.append('file', result, result.name);
-      
-            try {
-                const response = await fetch(`http://localhost:8000/upload/${id}`, {
-                    method: 'POST',
-                    body: formData
-                });
-                if (!response.ok) {
-                    throw new Error('Échec de l\'upload');
-                }
-                const data = await response.text();
-                setUploadStatus(data);
-            } catch (error) {
-                console.error('Une erreur s\'est produite lors du téléchargement du fichier : ', error);
-            }
-          },
-          error(err) {
-              console.error('Une erreur s\'est produite lors de la compression du fichier : ', err);
-          },
-      });
+    // Compression de l'image
+    new Compressor(file, {
+      quality: 0.6, // Qualité de compression entre 0 et 1
+      success: async (compressedFile) => {
+        const formData = new FormData();
+        formData.append('image', compressedFile);
+
+        try {
+          await fetch(`http://localhost:8000/upload/${id}`, {
+            method: 'POST',
+            body: formData,
+          });
+          alert('Image uploaded successfully');
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          alert('Failed to upload image');
+        }
+      },
+      error: (error) => {
+        console.error('Error compressing image:', error);
+        alert('Failed to compress image');
+      },
+    });
   };
 
 
@@ -57,10 +62,8 @@ export default function ProfilePicture({id}: Props) {
     <div className="bg-slate-100 rounded-xl p-3">
       <p className="text-md text-slate-500 mb-3">Profile picture</p>
       <label className="flex relative bg-primary/10 justify-start pt-5 w-[200px] h-[200px] rounded-full gap-y-3 mx-auto text-primary flex-col items-center">
-        {
-          file ? <Image fill={true} className="rounded-full" src={URL.createObjectURL(file)} alt="Preview" />
-          : <FaRegImage className="text-5xl" />
-        }
+          <img className="rounded-full w-full h-full object-cover absolute top-0 left-0 z-[0] opacity-20" src={`http://localhost:8000/image/${id}`} alt="Preview" />
+          <FaRegImage className="text-5xl absolute top-20 left-50" />
         <input
           onChange={handleFileChange}
           className="absolute top-0 left-0 w-full h-full opacity-0"

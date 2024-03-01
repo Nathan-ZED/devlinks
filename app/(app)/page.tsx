@@ -1,7 +1,6 @@
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import AddLink from "@/components/AddLink";
-import SaveButton from "@/components/SaveButton";
 import LinksSection from "@/components/LinksSection";
 
 export type Link = {
@@ -22,7 +21,7 @@ type User = {
 };
 
 export type LinkListProps = {
-  linksOfUser: Link[];
+  userLinks: Link[];
 };
 
 export default async function Home() {
@@ -33,21 +32,27 @@ export default async function Home() {
       //@ts-ignore
       email: session?.user?.email,
     },
-    include: {
-      links: true,
-    },
   });
+  async function getUserLinks() {
+    const response = await fetch(`http://localhost:3000/api/links/${userWithLinks.id}`, {
+      method: "GET",
+      cache: "no-store",
+      next: {
+        revalidate: 0,
+      }
+    });
+    return await response.json();
+  }
 
-  const linksCount: number = userWithLinks?.links.length;
+  const links = await getUserLinks();
 
   return (
     <main className="relative flex min-h-[100svh] flex-col items-center justify-between py-[8rem]">
       <div className="bg-primary/30 absolute right-0 top-[50%] z-[-1] h-[200px] w-[200px] rounded-full blur-[100px]"></div>
       <div className="container">
         <AddLink user={userWithLinks} />
-        <LinksSection userLinks={userWithLinks?.links} />
+        <LinksSection userLinks={links} />
       </div>
-      <SaveButton />
     </main>
   );
 }

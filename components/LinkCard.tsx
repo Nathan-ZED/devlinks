@@ -18,7 +18,6 @@ import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import LinkContext from "@/lib/LinksContext";
 import { FaTrash } from "react-icons/fa6";
 import { motion, useDragControls } from "framer-motion";
-import * as Icons from "react-icons/fa"
 import * as IconsSix from "react-icons/fa6"
 import { MdDragIndicator } from "react-icons/md";
 import { Reorder } from "framer-motion";
@@ -29,9 +28,8 @@ type LinkCard = {
 };
 
 export default function LinkCard({ link }: LinkCard) {
-  const { links, setLinks, isDisabled, setIsDisabled, platforms } = useContext(LinkContext);
+  const { setLinks } = useContext(LinkContext);
   const [platform, setPlatform] = useState<Platform | null>(null)
-  const [selectedLink, setSelectedLink] = useState<string>(link.name);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [linkUrl, setLinkUrl] = useState<string | null>(null);
   const controls = useDragControls();
@@ -45,32 +43,21 @@ export default function LinkCard({ link }: LinkCard) {
       }),
     });
     const linksWithoutDeletedOne = await response.json();
+    console.log(linksWithoutDeletedOne);
     setLinks(linksWithoutDeletedOne);
-  }
-
-  function handleChange(newValue: string) {
-    setSelectedLink(newValue);
-    const newValueElem = platforms?.filter((el) => el.name === newValue);
-    if (newValueElem) {
-      setLinkUrl(newValueElem[0]?.url);
-    };
   }
 
   useEffect(() => {
     if(link.name === '') {
       setEditMode(true);
     }
-    const selectedPlatform = platforms?.filter(el => el.id === link.platformId);
-    if(selectedPlatform) setPlatform(selectedPlatform[0]);
-  }, [platforms])
+  }, [])
 
   function rightInputPlaceholder() {
     if (linkUrl) return linkUrl;
     if (link.url) return link.url;
     return "Your link...";
   }
-
-  console.log(link);
 
   return (
     <Reorder.Item dragListener={false} dragControls={controls} value={link}>

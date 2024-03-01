@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useContext, useState } from "react";
 import LinkContext from "@/lib/LinksContext";
 import { Link } from "@/app/(app)/page";
-import { Platform } from "./utils";
 import {
   Dialog,
   DialogContent,
@@ -15,17 +14,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
-import { DynamicFaIcon } from "./LinkCard";
 
 type User = {
   id: number;
@@ -93,16 +84,12 @@ export default function AddLink({ user }: AddLinkProps) {
         platform: platformValue,
         link: link,
       }),
-    })
-    const newLinks = await response.json();
-    console.log(newLinks)
-    if(!newLinks.status) {
-      reset();
-      setLinks(newLinks);
-      setPlatformValue(null)
-      setIsDialogOpen(prev => !prev);
-    } else {
-      setError(newLinks.error);
+    });
+    const newLink = await response.json();
+    console.log(newLink)
+    if(links) {
+      setLinks([...links, newLink]);
+      closeDialog();
     }
 
 }
