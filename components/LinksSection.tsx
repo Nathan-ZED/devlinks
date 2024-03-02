@@ -11,12 +11,19 @@ type Props = {
   userLinks: Link[];
 };
 
+export function sortLinksByOrder(links: Link[]): Link[] {
+  links.sort((a, b) => a.order - b.order);
+  return links;
+}
+
+
 export default function LinksSection({ userLinks }: Props) {
   const { setLinks, links, isEmpty, setIsEmpty } = useContext(LinkContext);
 
   useEffect(() => {
     if(!links && userLinks) {
-      setLinks(userLinks);
+      const orderedLinks = sortLinksByOrder(userLinks);
+      setLinks(orderedLinks);
     }
     if(!userLinks) {
       setIsEmpty(true);

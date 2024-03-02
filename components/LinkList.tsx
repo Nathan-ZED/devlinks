@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import { Link, LinkListProps } from "@/app/(app)/page";
+import { Link } from "@/app/(app)/page";
 import LinkCard from "./LinkCard";
 import LinkContext from "@/lib/LinksContext";
-import { Suspense, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import Loading from "./Loading";
 import { AnimatePresence, Reorder } from "framer-motion";
 
@@ -21,7 +21,17 @@ export default function LinkList() {
   }, [links])
 
   async function onReorder(values: Link[]) {
-    setLinks(values);
+    const links = values.map((link, index) => {
+      link.order = index + 1;
+      return link;
+    });
+    await fetch(`/api/link`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        linksToEdit: links,
+      })
+    });
+    setLinks(links);
   }
 
   return (
